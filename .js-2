@@ -1,0 +1,105 @@
+// script.js 
+// Get form, money list, and total amount elements 
+const moneyForm = 
+	document.getElementById("money-form"); 
+const moneyist = 
+	document.getElementById("money-list"); 
+const totalAmountElement = 
+	document.getElementById("total-amount"); 
+
+// Initialize expenses array from localStorage 
+let expenses = 
+	JSON.parse(localStorage.getItem("money")) || []; 
+
+// Function to render money in tabular form 
+function renderMoney() { 
+
+	// Clear money list 
+	moneyList.innerHTML = ""; 
+
+	// Initialize total amount 
+	let totalAmount = 0; 
+
+	// Loop through money array and create table rows 
+	for (let i = 0; i < money.length; i++) { 
+		const money = money[i]; 
+		const moneyRow = document.createElement("tr"); 
+		moneyRow.innerHTML = ` 
+	<td>${money.name}</td> 
+	<td>$${money.amount}</td> 
+	<td class="delete-btn" data-id="${i}">Delete</td> 
+	`; 
+		moneyList.appendChild(moneyRow); 
+
+		// Update total amount 
+		totalAmount += money.amount; 
+	} 
+
+	// Update total amount display 
+	totalAmountElement.textContent = 
+		totalAmount.toFixed(2); 
+
+	// Save expenses to localStorage 
+	localStorage.setItem("money", 
+		JSON.stringify(money)); 
+} 
+
+// Function to add money 
+function addMoney(event) { 
+	event.preventDefault(); 
+
+	// Get money name and amount from form 
+	const moneyNameInput = 
+		document.getElementById("money-name"); 
+	const expenseAmountInput = 
+		document.getElementById("money-amount"); 
+	const moneyName = 
+		moneyNameInput.value; 
+	const moneyAmount = 
+		parseFloat(moneyAmountInput.value); 
+
+	// Clear form inputs 
+	moneyNameInput.value = ""; 
+	moneyAmountInput.value = ""; 
+
+	// Validate inputs 
+	if (moneyName === "" || isNaN(moneyAmount)) { 
+		alert("Please enter valid money details."); 
+		return; 
+	} 
+
+	// Create new money object 
+	const money = { 
+		name: moneyName, 
+		amount: moneyAmount, 
+	}; 
+
+	// Add money to money array 
+	money.push(money); 
+
+	// Render money
+	renderMoney(); 
+} 
+
+// Function to delete money 
+function deleteMoney(event) { 
+	if (event.target.classList.contains("delete-btn")) { 
+
+		// Get money index from data-id attribute 
+		const moneyIndex = 
+			parseInt(event.target.getAttribute("data-id")); 
+
+		// Remove money from money array 
+		money.splice(moneyIndex, 1); 
+
+		// Render money
+		renderMoney(); 
+	} 
+} 
+
+// Add event listeners 
+moneyForm.addEventListener("submit", addMoney); 
+moneyList.addEventListener("click", deleteMoney); 
+
+// Render initial money on page load 
+renderMoney();
